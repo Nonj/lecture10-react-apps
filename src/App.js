@@ -1,4 +1,7 @@
 import React from 'react';
+import {Form, FormControl, InputGroup, Button, Glyphicon} from 'react-bootstrap';
+import MovieController from './MovieController';
+
 
 var SAMPLE_MOVIES = [
   {
@@ -19,7 +22,7 @@ class App extends React.Component {
           <h1>Movie Search</h1>
         </header>
         <main>
-          <MovieTable movies={SAMPLE_MOVIES} />
+          <MovieTable movies={this.props.data.results} />
         </main>
       </div>
     );
@@ -53,7 +56,7 @@ class MovieRow extends React.Component {
   render() {
     return (
       <tr>
-        <td><img className="poster-lg" src={this.props.movie.poster_url} alt="poster for movie title"/></td>
+        <td><img className="poster-lg" src={MovieController.getPosterUrl(this.props.movie)} alt="poster for movie title"/></td>
         <td>{this.props.movie.title}</td>
         <td>{this.props.movie.release_date}</td>
       </tr>
@@ -61,4 +64,40 @@ class MovieRow extends React.Component {
   }
 }
 
+
+
+class SearchForm extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state = {value:''}
+    this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event){
+    this.setState({value:event.target.value});
+    //this.props.searchFunction(searchTerm);
+  }
+
+  handleClick(event) {
+    this.props.searchFunction(this.state.value);
+  }
+
+  render() {
+    return (
+      <Form inline>
+        <InputGroup>
+          <InputGroup.Button>
+            <Button onClick={this.handleClick}><Glyphicon glyph="search" aria-label="Search" /></Button>
+          </InputGroup.Button>
+          <FormControl type="text" placeholder="Search for a movie..." onChange={this.handleChange} />
+          <InputGroup.Addon>
+            {this.props.resultCount} results
+          </InputGroup.Addon>
+        </InputGroup>
+      </Form>
+    );
+  }
+}
 export default App;
